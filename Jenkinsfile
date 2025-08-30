@@ -1,0 +1,38 @@
+pipeline {
+    agent any
+
+    tools {
+        // Install the Maven version configured as "M3" and add it to the path.
+        maven "M3911"
+       // jdk 'jdk-21'
+    }
+
+    stages {
+        stage('Echo Version'){
+            steps{
+                sh 'echo Print Maven Version'
+                sh 'mvn -version'               
+            }
+        }
+        stage('Build') {
+            steps {
+                // Get Some code from a GitHub repository
+               // git branch: 'main', changelog: false, poll: false, url: 'https://github.com/jenkins-kk-demo/parameterized-pipeline-job-init.git'
+                
+                // Run Maven Package CMD
+                sh "mvn clean package -DskpTests=true"
+            }
+        }       
+       stage("Unit Test"){
+           steps {
+               script {
+                    for (int i = 0; i < 60; i++) {
+                        echo"${i + 1}"
+                        sleep 1
+               }
+               sh "mvn test"
+              }
+           }
+       }
+    }
+}
